@@ -4,7 +4,59 @@
 <meta charset="ISO-8859-1">
 <title>Registro</title>
 </head>
+<style>
+table {
+  border: 1px solid;
+}
+</style>
 <body>
-
+  <div style="margin-left: 10%; margin-right: 10%">
+    <form>
+      <table>
+        <h2 style="color:blue;">Registro de jugadores de "Hundir la Flota"</h2>
+        <tr>
+          <td>Nombre (*):</td>
+          <td><input type="text" name="name" required></td>
+        </tr>
+        <tr>
+          <td>Primer apellido (*):</td>
+          <td><input type="text" name="first_lastname" required></td>
+        </tr>
+        <tr>
+          <td>Segundo apellido:</td>
+          <td><input type="text" name="second_lastname"></td>
+        </tr>
+        <tr>
+          <td>DNI (*):</td>
+          <td><input type="text" name="dni" required></td>
+        </tr>
+        <tr>
+          <td>Email:</td>
+          <td><input type="email" name="email"></td>
+        </tr>
+        <tr>
+          <td>Tipo de pago (*):</td>
+          <td>
+            <input type="radio" name="paymode" value="cash" required> Contrareembolso
+            <input type="radio" name="paymode" value="visa"> Tarjeta VISA
+            <input type="radio" name="paymode" value="check"> Cheque
+          </td>
+        </tr>
+        <tr>
+          <td>Contraseña:</td>
+          <td><input type="password" name="password" required></td>
+        </tr>
+        <tr>
+          <td>Repita su contraseña:</td>
+          <td><input type="password" name="confirm_password" required></td>
+        </tr>
+        <tr>
+          <td><input type="submit" value="Enviar datos"></td>
+          <td><input type="reset" value="Borrar datos"></td>
+        </tr>
+      </table>
+      (*) Los campos con asterisco son obligatorios.
+    </form>
+  </div>
 </body>
 </html>
