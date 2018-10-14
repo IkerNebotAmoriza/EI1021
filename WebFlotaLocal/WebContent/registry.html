@@ -2,35 +2,42 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<title>Registro</title>
+<title>Registro</title> <!-- TITULO DE LA PESTAÑA -->
 </head>
+
 <body>
   <div style="margin-left: 10%; margin-right: 10%">
-    <form>
+    <form> <!-- AQUI COMIENZA EL CUERPOD EL FORMULARIO -->
     <fieldset>
     <legend><h2 style="color:blue;">Registro de jugadores de "Hundir la Flota"</h2></legend>
-      <table>
-        <tr>
+      <table> <!-- INICIO DE LA TABLA -->
+      
+        <tr> <!-- FILA CON NOMBRE -->
           <td>Nombre (*):</td>
           <td><input type="text" name="name" required></td>
         </tr>
-        <tr>
+        
+        <tr> <!-- FILA CON APELLIDO 1 -->
           <td>Primer apellido (*):</td>
           <td><input type="text" name="first_lastname" required></td>
         </tr>
-        <tr>
+        
+        <tr> <!-- FILA CON APELLIDO 2 -->
           <td>Segundo apellido:</td>
           <td><input type="text" name="second_lastname"></td>
         </tr>
-        <tr>
+        
+        <tr> <!-- FILA CON EL DNI -->
           <td>DNI (*):</td>
           <td><input type="text" name="dni" required></td>
         </tr>
-        <tr>
+        
+        <tr> <!-- FILA CON EL CORREO ELECTRONICO -->
           <td>Email:</td>
           <td><input type="email" name="email"></td>
         </tr>
-        <tr>
+        
+        <tr> <!-- FILA CON LA OPCIONES DE PAGO -->
           <td>Tipo de pago (*):</td>
           <td>
             <input type="radio" name="paymode" value="cash" required> Contrareembolso
@@ -38,18 +45,22 @@
             <input type="radio" name="paymode" value="check"> Cheque
           </td>
         </tr>
-        <tr>
+        
+        <tr> <!-- FILA CON CONTRASEÑA -->
           <td>Contraseña:</td>
           <td><input type="password" name="password" required></td>
         </tr>
+        
         <tr>
           <td>Repita su contraseña:</td>
           <td><input type="password" name="confirm_password" required></td>
         </tr>
-        <tr>
+        
+        <tr> <!-- BOTONES DE CONFIRMACION Y BORRADO DE DATOS -->
           <td><input type="submit" value="Enviar datos"></td>
           <td><input type="reset" value="Borrar datos"></td>
         </tr>
+        
       </table>
       </fieldset>
       (*) Los campos con asterisco son obligatorios.
