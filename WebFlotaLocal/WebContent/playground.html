@@ -1,10 +1,86 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="ISO-8859-1">
+<meta charset="utf-8">
 <title>Tablero</title>
 </head>
+<style>
+body, table, tr, td {text-align: center;}
+table {margin: 0 auto;}
+td {width: 50px}
+</style>
 <body>
+  <h1>Tableros de juego</h1>
+  <form>
+    <h2>Tablero con menús de selección</h2>
+    <table border="1">
+      <tr>
+        <td></td><td>A</td><td>B</td><td>C</td><td>D</td>
+      </tr>
+      <tr>
+        <td>1</td><td style="background-color:blue;"></td><td></td><td></td><td></td>
+      </tr>
+      <tr>
+        <td>2</td><td></td><td style="background-color:red;"></td><td></td><td></td>
+      </tr>
+      <tr>
+        <td>3</td><td></td><td style="background-color:red;"></td><td></td><td></td>
+      </tr>
+      <tr>
+        <td>4</td><td></td><td></td><td></td><td style="background-color:orange;"></td>
+      </tr>
+    </table>
+    <select name="row">
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+    </select>
+    <select name="col">
+      <option value="A">A</option>
+      <option value="B">B</option>
+      <option value="C">C</option>
+      <option value="D">D</option>
+    </select>
+    <input type="submit" value="Enviar">
+  </form>
 
+  <form>
+    <h2>Tablero con botones en las casillas</h2>
+    <table>
+      <tr>
+        <td></td><td>A</td><td>B</td><td>C</td><td>D</td>
+      </tr>
+      <tr>
+        <td>1</td>
+        <td style="background-color:blue;"><input type="radio", name="field", value="1A"></td>
+        <td><input type="radio", name="field", value="1B"></td>
+        <td><input type="radio", name="field", value="1C"></td>
+        <td><input type="radio", name="field", value="1D"></td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><input type="radio", name="field", value="2A"></td>
+        <td style="background-color:red;"><input type="radio", name="field", value="2B"></td>
+        <td><input type="radio", name="field", value="2C"></td>
+        <td><input type="radio", name="field", value="2D"></td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td><input type="radio", name="field", value="3A"></td>
+        <td style="background-color:red;"><input type="radio", name="field", value="3B"></td>
+        <td><input type="radio", name="field", value="3C"></td>
+        <td><input type="radio", name="field", value="3D"></td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td><input type="radio", name="field", value="4A"></td>
+        <td><input type="radio", name="field", value="4B"></td>
+        <td><input type="radio", name="field", value="4C"></td>
+        <td style="background-color:orange;"><input type="radio", name="field", value="4D"></td>
+      </tr>
+    </table>
+    <input type="submit" value="Enviar">
+  </form>
 </body>
 </html>
