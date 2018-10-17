@@ -22,6 +22,12 @@ import cliente.ClienteFlotaSockets.ButtonListener;
 import cliente.ClienteFlotaSockets.GuiTablero;
 import cliente.ClienteFlotaSockets.MenuListener;
 
+//Modifícala para que instancie un objeto de la clase AuxiliarClienteFlota en el método 'ejecuta'
+
+	// Modifica todas las llamadas al objeto de la clase Partida
+	// por llamadas al objeto de la clase AuxiliarClienteFlota.
+	// Los métodos a llamar tendrán la misma signatura.
+
 public class ClienteFlotaSockets {
 	/**
 	 * Implementa el juego 'Hundir la flota' mediante una interfaz grafica (GUI)
