@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.InetAddress;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -36,8 +38,8 @@ public class ClienteFlotaSockets {
 	/** Parametros por defecto de una partida */
 	public static final int NUMFILAS=8, NUMCOLUMNAS=8, NUMBARCOS=6;
 
-	private GuiTablero guiTablero = null;		// El juego se encarga de crear y modificar la interfaz grafica
-	private Partida partida = null;            	// Objeto con los datos de la partida en juego
+	private GuiTablero guiTablero = null;						// El juego se encarga de crear y modificar la interfaz grafica
+	private AuxiliarClienteFlota partida = null;            	// Objeto con los datos de la partida en juego
 	
 	/** Atributos de la partida guardados en el juego para simplificar su implementacion */
 	private int quedan = NUMBARCOS, disparos = 0;
@@ -56,7 +58,12 @@ public class ClienteFlotaSockets {
 	 */
 	private void ejecuta() {
 		// Instancia la primera partida
-		partida = new Partida(NUMFILAS, NUMCOLUMNAS, NUMBARCOS);
+		try {
+			partida = new AuxiliarClienteFlota(InetAddress.getLocalHost().getHostName(), "8888", NUMFILAS, NUMCOLUMNAS, NUMBARCOS);
+		}catch(IOException ex){
+			ex.printStackTrace();
+		}
+		
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
@@ -196,9 +203,13 @@ public class ClienteFlotaSockets {
 			}
 			// SOLUCIÓN
 			String[] solucion;
-			solucion = partida.getSolucion();	
-			for (int i = 0; i < solucion.length; i++) {				 
-				pintaBarcoHundido(solucion[i]);			
+			try {
+				solucion = partida.getSolucion();
+				for (int i = 0; i < solucion.length; i++) {
+					pintaBarcoHundido(solucion[i]);			
+				}
+			}catch(IOException ex) {
+				ex.printStackTrace();
 			}
 			
 			guiTablero.cambiaEstado("FIN ... Intentos: " + disparos + "    Barcos restantes: " + quedan);
@@ -299,7 +310,11 @@ public class ClienteFlotaSockets {
 			
 			case "Nueva Partida":
 				guiTablero.limpiaTablero();
-				partida = new Partida(NUMFILAS, NUMCOLUMNAS, NUMBARCOS);
+				try {
+					partida = new AuxiliarClienteFlota(InetAddress.getLocalHost().getHostName(), "8888", NUMFILAS, NUMCOLUMNAS, NUMBARCOS);
+				}catch(IOException ex) {
+					ex.printStackTrace();
+				}
 				break;
 			case "Mostrar Solucion":
 				guiTablero.muestraSolucion();
@@ -340,16 +355,22 @@ public class ClienteFlotaSockets {
 
 	private void pruebaCasilla(int f, int c) {
 		disparos++;
-		int resultado = partida.pruebaCasilla(f, c);
-		if (resultado == Partida.AGUA) {
-			guiTablero.pintaBoton(guiTablero.buttons[f][c], Color.BLUE);
-			guiTablero.buttons[f][c].setEnabled(false);
-		} else if (resultado == Partida.TOCADO) {
-			guiTablero.pintaBoton(guiTablero.buttons[f][c], Color.ORANGE);
-			guiTablero.buttons[f][c].setEnabled(false);
-		} else if (resultado >= 0) {
-			guiTablero.pintaBarcoHundido(partida.getBarco(resultado));
-			quedan--;
+		try {
+			
+			int resultado = partida.pruebaCasilla(f, c);
+			if (resultado == Partida.AGUA) {
+				guiTablero.pintaBoton(guiTablero.buttons[f][c], Color.BLUE);
+				guiTablero.buttons[f][c].setEnabled(false);
+			} else if (resultado == Partida.TOCADO) {
+				guiTablero.pintaBoton(guiTablero.buttons[f][c], Color.ORANGE);
+				guiTablero.buttons[f][c].setEnabled(false);
+			} else if (resultado >= 0) {
+				guiTablero.pintaBarcoHundido(partida.getBarco(resultado));
+				quedan--;
+				
+			}
+		}catch(IOException ex) {
+			ex.printStackTrace();
 		}
 		
 		if (quedan == 0) {

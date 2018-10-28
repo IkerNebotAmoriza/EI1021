@@ -42,7 +42,7 @@ public class MyStreamSocket extends Socket {
       //The ensuing flush method call is necessary for the data to
       // be written to the socket data stream before the
       // socket is closed.
-      output.flush();               
+      output.flush();
    } // end sendMessage
 
    public String receiveMessage( )

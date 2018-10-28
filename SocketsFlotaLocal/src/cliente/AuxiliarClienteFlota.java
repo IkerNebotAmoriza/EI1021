@@ -23,11 +23,9 @@ public class AuxiliarClienteFlota {
 	 * @param	hostName	nombre de la máquina que ejecuta el servidor
 	 * @param	portNum		numero de puerto asociado al servicio en el servidor
 	 */
-   AuxiliarClienteFlota(String hostName,
-                     String portNum) throws SocketException,
-                     UnknownHostException, IOException {
-	   
-  	   // Por implementar	   
+   AuxiliarClienteFlota(String hostName, String portNum, int nf, int nc, int nb) throws SocketException, UnknownHostException, IOException {
+	   mySocket = new MyStreamSocket(InetAddress.getByName(hostName), Integer.parseInt(portNum));
+	   mySocket.sendMessage(nf+"#"+nc+"#"+nb);
 	   
    } // end constructor
    
@@ -36,9 +34,8 @@ public class AuxiliarClienteFlota {
 	 * con el formato: "0"
 	 * @throws	IOException
 	 */
-   public void fin( ) {
-	   
-	   // Por implementar
+   public void fin( ) throws IOException{
+		   mySocket.sendMessage("0");
 	   
    } // end fin 
   
@@ -51,8 +48,7 @@ public class AuxiliarClienteFlota {
     * @throws IOException
     */
    public void nuevaPartida(int nf, int nc, int nb)  throws IOException {
-	   
-	   // Por implementar
+	   mySocket.sendMessage("1#"+nf+"#"+nc+"#"+nb);
 	   
    } // end nuevaPartida
 
@@ -66,10 +62,9 @@ public class AuxiliarClienteFlota {
     * @throws IOException
     */
    public int pruebaCasilla(int f, int c) throws IOException {
-	   
-	   // Por implementar
-	   return 0; // cambiar por el retorno correcto
-	   
+	   mySocket.sendMessage("2#"+f+"#"+c);
+	   int res = Integer.parseInt(mySocket.receiveMessage());
+	   return res;
     } // end getCasilla
    
    /**
@@ -81,10 +76,10 @@ public class AuxiliarClienteFlota {
     * @throws IOException
     */
    public String getBarco(int idBarco) throws IOException {
+	   mySocket.sendMessage("3#"+idBarco);
+	   String res = mySocket.receiveMessage();
 	   
-	   // Por implementar
-	   return null; // cambiar por el retorno correcto
-	   
+	   return res;
     } // end getCasilla
    
    /**
@@ -95,10 +90,14 @@ public class AuxiliarClienteFlota {
     * @throws IOException
     */
    public String[] getSolucion() throws IOException {
+	   mySocket.sendMessage("4");
+	   int size = Integer.parseInt(mySocket.receiveMessage());
+	   String  [] sol = new String[size];
 	   
-	   // Por implementar
-	   return null; // cambiar por el retorno correcto
-	   
+	   for( int i = 0; i < size; i++ ) {
+		   sol[i] = mySocket.receiveMessage();
+	   }
+	   return sol;
     } // end getSolucion
    
 

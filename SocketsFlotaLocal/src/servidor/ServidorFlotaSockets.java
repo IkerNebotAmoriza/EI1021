@@ -1,5 +1,5 @@
 package servidor;
-
+import java.net.InetAddress;
 import java.net.ServerSocket;
 
 import comun.MyStreamSocket;
@@ -15,6 +15,33 @@ import comun.MyStreamSocket;
 public class ServidorFlotaSockets {
    
    public static void main(String[] args) {
+	   int puertoServidor = 8888;
+	   
+	   if ( args.length == 1 ) {
+		   puertoServidor = Integer.parseInt(args[0]);
+	   }
+	   
+	   try {
+		
+		   ServerSocket socketServidor = new ServerSocket(puertoServidor);
+		   System.out.println("Servidor listo.");
+		   
+		   while(true) {
+			   
+			   System.out.println("A la espera de una conexion.");
+			   MyStreamSocket socketDatos = new MyStreamSocket(socketServidor.accept());
+			   String [] tablero = socketDatos.receiveMessage().split("#");
+			   System.out.println("Conexion aceptada.");
+			   HiloServidorFlota h = new HiloServidorFlota(socketDatos, Integer.parseInt(tablero[0]), Integer.parseInt(tablero[1]), Integer.parseInt(tablero[2]));
+			   
+			   Thread hilo = new Thread(h);
+			   hilo.start();
+			   
+		   }
+		   
+	   }catch(Exception ex) {
+		   ex.printStackTrace();
+	   }
 	   
 	  // Acepta conexiones vía socket de distintos clientes.
 	  // Por cada conexión establecida lanza una hebra de la clase HiloServidorFlota.
