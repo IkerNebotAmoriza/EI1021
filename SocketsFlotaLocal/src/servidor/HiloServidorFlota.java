@@ -17,18 +17,13 @@ import comun.MyStreamSocket;
 class HiloServidorFlota implements Runnable {
    MyStreamSocket myDataSocket;
    private Partida partida = null;
-   int nf, nc, nb;
 
 	/**
 	 * Construye el objeto a ejecutar por la hebra para servir a un cliente
 	 * @param	myDataSocket	socket stream para comunicarse con el cliente
 	 */
-   HiloServidorFlota(MyStreamSocket myDataSocket, int nf, int nc, int nb) {
+   HiloServidorFlota(MyStreamSocket myDataSocket) {
 	   this.myDataSocket = myDataSocket;
-	   this.nf = nf;
-	   this.nc = nc;
-	   this.nb = nb;
-	   this.partida = new Partida(nf,nc,nb);
 	   
    }
  
@@ -38,13 +33,15 @@ class HiloServidorFlota implements Runnable {
    public void run( ) {
       boolean done = false;
       int operacion = 0;
-      // ...
+      String [] mensaje;
+      int [] argumentos;
+      
       try {
          while (!done) {
         	 // Recibe una peticion del cliente
         	 // Extrae la operación y los argumentos
-        	 String [] mensaje = myDataSocket.receiveMessage().split("#");
-        	 int [] argumentos = new int[mensaje.length];
+        	 mensaje = myDataSocket.receiveMessage().split("#");
+        	 argumentos = new int[mensaje.length];
         	 
         	 for(int i = 0; i < mensaje.length; i++) {
         		 argumentos[i] = Integer.parseInt(mensaje[i]);
@@ -54,22 +51,24 @@ class HiloServidorFlota implements Runnable {
         	 
              switch (operacion) {
              case 0:  // fin de conexión con el cliente
+            	 done = true;
             	 myDataSocket.close();
             	 break;
 
              case 1: { // Crea nueva partida
             	 partida = new Partida(argumentos[1], argumentos [2], argumentos[3]);
             	 break;
+            	 
              }             
              case 2: { // Prueba una casilla y devuelve el resultado al cliente
-            	 String res = String.valueOf(partida.pruebaCasilla(argumentos[1], argumentos[2]));
-            	 myDataSocket.sendMessage(res);
+            	 myDataSocket.sendMessage(String.valueOf(partida.pruebaCasilla(argumentos[1], argumentos[2])));
                  break;
+                 
              }
              case 3: { // Obtiene los datos de un barco y se los devuelve al cliente
-            	 String res = String.valueOf(partida.getBarco(argumentos[1]));
-            	 myDataSocket.sendMessage(res);
+            	 myDataSocket.sendMessage(String.valueOf(partida.getBarco(argumentos[1])));
                  break;
+                 
              }
              case 4: { // Devuelve al cliente la solucion en forma de vector de cadenas
         	   // Primero envia el numero de barcos 
@@ -77,11 +76,12 @@ class HiloServidorFlota implements Runnable {
             	 String [] datosBarcos = partida.getSolucion();
             	 myDataSocket.sendMessage(String.valueOf(datosBarcos.length));
             	 
-            	 for(int i = 0; i < datosBarcos.length; i++) {
-            		 myDataSocket.sendMessage(datosBarcos[i]);
+            	 for(String s: datosBarcos) {
+            		 myDataSocket.sendMessage(s);
             	 }
             	 
                break;
+               
              }
          } // fin switch
        } // fin while   

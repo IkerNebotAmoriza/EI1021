@@ -30,9 +30,8 @@ public class ServidorFlotaSockets {
 			   
 			   System.out.println("A la espera de una conexion.");
 			   MyStreamSocket socketDatos = new MyStreamSocket(socketServidor.accept());
-			   String [] tablero = socketDatos.receiveMessage().split("#");
 			   System.out.println("Conexion aceptada.");
-			   HiloServidorFlota h = new HiloServidorFlota(socketDatos, Integer.parseInt(tablero[0]), Integer.parseInt(tablero[1]), Integer.parseInt(tablero[2]));
+			   HiloServidorFlota h = new HiloServidorFlota(socketDatos);
 			   
 			   Thread hilo = new Thread(h);
 			   hilo.start();

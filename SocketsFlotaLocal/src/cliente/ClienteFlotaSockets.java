@@ -59,7 +59,8 @@ public class ClienteFlotaSockets {
 	private void ejecuta() {
 		// Instancia la primera partida
 		try {
-			partida = new AuxiliarClienteFlota(InetAddress.getLocalHost().getHostName(), "8888", NUMFILAS, NUMCOLUMNAS, NUMBARCOS);
+			partida = new AuxiliarClienteFlota(InetAddress.getLocalHost().getHostName(), "8888");
+			partida.nuevaPartida(NUMFILAS, NUMCOLUMNAS, NUMBARCOS);
 		}catch(IOException ex){
 			ex.printStackTrace();
 		}
@@ -311,7 +312,7 @@ public class ClienteFlotaSockets {
 			case "Nueva Partida":
 				guiTablero.limpiaTablero();
 				try {
-					partida = new AuxiliarClienteFlota(InetAddress.getLocalHost().getHostName(), "8888", NUMFILAS, NUMCOLUMNAS, NUMBARCOS);
+					partida.nuevaPartida(NUMFILAS, NUMCOLUMNAS, NUMBARCOS);
 				}catch(IOException ex) {
 					ex.printStackTrace();
 				}
@@ -321,6 +322,12 @@ public class ClienteFlotaSockets {
 				break;
 			case "Salir":
 				guiTablero.liberaRecursos();
+				try {
+					partida.fin();
+				}catch(IOException ex) {
+					ex.printStackTrace();
+				}
+				
 				System.exit(0);
 				
 			}

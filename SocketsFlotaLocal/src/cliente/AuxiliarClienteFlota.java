@@ -23,9 +23,8 @@ public class AuxiliarClienteFlota {
 	 * @param	hostName	nombre de la máquina que ejecuta el servidor
 	 * @param	portNum		numero de puerto asociado al servicio en el servidor
 	 */
-   AuxiliarClienteFlota(String hostName, String portNum, int nf, int nc, int nb) throws SocketException, UnknownHostException, IOException {
+   AuxiliarClienteFlota(String hostName, String portNum) throws SocketException, UnknownHostException, IOException {
 	   mySocket = new MyStreamSocket(InetAddress.getByName(hostName), Integer.parseInt(portNum));
-	   mySocket.sendMessage(nf+"#"+nc+"#"+nb);
 	   
    } // end constructor
    
@@ -36,7 +35,8 @@ public class AuxiliarClienteFlota {
 	 */
    public void fin( ) throws IOException{
 		   mySocket.sendMessage("0");
-	   
+		   mySocket.close();
+		   
    } // end fin 
   
    /**
@@ -63,8 +63,8 @@ public class AuxiliarClienteFlota {
     */
    public int pruebaCasilla(int f, int c) throws IOException {
 	   mySocket.sendMessage("2#"+f+"#"+c);
-	   int res = Integer.parseInt(mySocket.receiveMessage());
-	   return res;
+	   return Integer.parseInt(mySocket.receiveMessage());
+	   
     } // end getCasilla
    
    /**
@@ -77,9 +77,8 @@ public class AuxiliarClienteFlota {
     */
    public String getBarco(int idBarco) throws IOException {
 	   mySocket.sendMessage("3#"+idBarco);
-	   String res = mySocket.receiveMessage();
+	   return mySocket.receiveMessage();
 	   
-	   return res;
     } // end getCasilla
    
    /**
@@ -91,13 +90,13 @@ public class AuxiliarClienteFlota {
     */
    public String[] getSolucion() throws IOException {
 	   mySocket.sendMessage("4");
-	   int size = Integer.parseInt(mySocket.receiveMessage());
-	   String  [] sol = new String[size];
+	   String  [] sol = new String[Integer.parseInt(mySocket.receiveMessage())];
 	   
-	   for( int i = 0; i < size; i++ ) {
+	   for( int i = 0; i < sol.length; i++ ) {
 		   sol[i] = mySocket.receiveMessage();
 	   }
 	   return sol;
+	   
     } // end getSolucion
    
 
