@@ -35,7 +35,7 @@ public class AuxiliarClienteFlota {
 	 */
    public void fin( ) throws IOException{
 		   mySocket.sendMessage("0");
-		   mySocket.close();
+		   mySocket.close();	//Cerramos el hilo actual, y por lo tanto la conexion con el servidor
 		   
    } // end fin 
   

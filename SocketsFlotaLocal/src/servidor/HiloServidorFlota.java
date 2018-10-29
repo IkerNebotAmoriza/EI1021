@@ -52,7 +52,7 @@ class HiloServidorFlota implements Runnable {
              switch (operacion) {
              case 0:  // fin de conexión con el cliente
             	 done = true;
-            	 myDataSocket.close();
+            	 myDataSocket.close();	//Cerramos el bucle y el socket
             	 break;
 
              case 1: { // Crea nueva partida
@@ -74,9 +74,9 @@ class HiloServidorFlota implements Runnable {
         	   // Primero envia el numero de barcos 
                // Despues envia una cadena por cada barco
             	 String [] datosBarcos = partida.getSolucion();
-            	 myDataSocket.sendMessage(String.valueOf(datosBarcos.length));
+            	 myDataSocket.sendMessage(String.valueOf(datosBarcos.length));	//Enviamos la longitud del vector de barcos al cliente
             	 
-            	 for(String s: datosBarcos) {
+            	 for(String s: datosBarcos) {	//Por cada barco en el vector de barcos enviamos uno de ellos cada vez como respuesta
             		 myDataSocket.sendMessage(s);
             	 }
             	 
@@ -86,7 +86,7 @@ class HiloServidorFlota implements Runnable {
          } // fin switch
        } // fin while   
      } // fin try
-     catch (Exception ex) {
+     catch (Exception ex) {	//Cazamos cualquier excepcion que se ejecute dentro del bucle
         System.out.println("Exception caught in thread: " + ex);
      } // fin catch
    } //fin run

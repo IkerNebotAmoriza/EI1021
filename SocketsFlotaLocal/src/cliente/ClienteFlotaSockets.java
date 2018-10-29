@@ -39,7 +39,7 @@ public class ClienteFlotaSockets {
 	public static final int NUMFILAS=8, NUMCOLUMNAS=8, NUMBARCOS=6;
 
 	private GuiTablero guiTablero = null;						// El juego se encarga de crear y modificar la interfaz grafica
-	private AuxiliarClienteFlota partida = null;            	// Objeto con los datos de la partida en juego
+	private AuxiliarClienteFlota partida = null;            	// Objeto auxiliar que llamará a los metodos del objeto partida del servidor
 	
 	/** Atributos de la partida guardados en el juego para simplificar su implementacion */
 	private int quedan = NUMBARCOS, disparos = 0;
@@ -59,8 +59,8 @@ public class ClienteFlotaSockets {
 	private void ejecuta() {
 		// Instancia la primera partida
 		try {
-			partida = new AuxiliarClienteFlota(InetAddress.getLocalHost().getHostName(), "8888");
-			partida.nuevaPartida(NUMFILAS, NUMCOLUMNAS, NUMBARCOS);
+			partida = new AuxiliarClienteFlota(InetAddress.getLocalHost().getHostName(), "8888"); //Creamos la nueva partida en el servidor
+			partida.nuevaPartida(NUMFILAS, NUMCOLUMNAS, NUMBARCOS);								  //E iniciamos una nueva partida para poder jugar
 		}catch(IOException ex){
 			ex.printStackTrace();
 		}
@@ -205,8 +205,8 @@ public class ClienteFlotaSockets {
 			// SOLUCIÃ“N
 			String[] solucion;
 			try {
-				solucion = partida.getSolucion();
-				for (int i = 0; i < solucion.length; i++) {
+				solucion = partida.getSolucion();	//El servidor nos devuelve la un vector con los barcos existentes.
+				for (int i = 0; i < solucion.length; i++) { //Pintamos cada barco
 					pintaBarcoHundido(solucion[i]);			
 				}
 			}catch(IOException ex) {
@@ -312,18 +312,18 @@ public class ClienteFlotaSockets {
 			case "Nueva Partida":
 				guiTablero.limpiaTablero();
 				try {
-					partida.nuevaPartida(NUMFILAS, NUMCOLUMNAS, NUMBARCOS);
+					partida.nuevaPartida(NUMFILAS, NUMCOLUMNAS, NUMBARCOS);	//Nueva partida si se selecciona la opcion en el menu, llamamos a la clase auxiliar
 				}catch(IOException ex) {
 					ex.printStackTrace();
 				}
 				break;
 			case "Mostrar Solucion":
-				guiTablero.muestraSolucion();
+				guiTablero.muestraSolucion();	//Llamamos al metodo local muestraSolucion(), que llama a la clase auxiliar
 				break;
 			case "Salir":
 				guiTablero.liberaRecursos();
 				try {
-					partida.fin();
+					partida.fin();				//Llamamos a la clase auxiliar para acabar con el hilo de la sesión actual.
 				}catch(IOException ex) {
 					ex.printStackTrace();
 				}
@@ -364,7 +364,7 @@ public class ClienteFlotaSockets {
 		disparos++;
 		try {
 			
-			int resultado = partida.pruebaCasilla(f, c);
+			int resultado = partida.pruebaCasilla(f, c); //Llamamos al metodo de la clase auxiliar para probar casilla en el servidor
 			if (resultado == Partida.AGUA) {
 				guiTablero.pintaBoton(guiTablero.buttons[f][c], Color.BLUE);
 				guiTablero.buttons[f][c].setEnabled(false);
@@ -376,7 +376,7 @@ public class ClienteFlotaSockets {
 				quedan--;
 				
 			}
-		}catch(IOException ex) {
+		}catch(IOException ex) {	//Si no recibimos nada o es erroneo, se lanza una excepcion.
 			ex.printStackTrace();
 		}
 		

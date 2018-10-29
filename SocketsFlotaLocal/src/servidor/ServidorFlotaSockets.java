@@ -15,30 +15,34 @@ import comun.MyStreamSocket;
 public class ServidorFlotaSockets {
    
    public static void main(String[] args) {
-	   int puertoServidor = 8888;
+	   int puertoServidor = 8888;	//Puerto del servidor por defecto
 	   
-	   if ( args.length == 1 ) {
-		   puertoServidor = Integer.parseInt(args[0]);
+	   if ( args.length == 1 ) {	//Si la llamada al servidor tiene argumento
+		   try {
+			   puertoServidor = Integer.parseInt(args[0]);	//Lo usamos como puerto
+		   }catch(IllegalArgumentException ex){				//Si no es un un argumento valido lanzamos una excepcion
+			   ex.printStackTrace();
+		   }
 	   }
 	   
 	   try {
 		
-		   ServerSocket socketServidor = new ServerSocket(puertoServidor);
+		   ServerSocket socketServidor = new ServerSocket(puertoServidor);	//Creamos socket de conexion
 		   System.out.println("Servidor listo.");
 		   
-		   while(true) {
+		   while(true) {	//Bucle infinito
 			   
 			   System.out.println("A la espera de una conexion.");
-			   MyStreamSocket socketDatos = new MyStreamSocket(socketServidor.accept());
+			   MyStreamSocket socketDatos = new MyStreamSocket(socketServidor.accept());	//Creamos socket de datos
 			   System.out.println("Conexion aceptada.");
-			   HiloServidorFlota h = new HiloServidorFlota(socketDatos);
+			   HiloServidorFlota h = new HiloServidorFlota(socketDatos);	//Creamos un objeto runnable
 			   
-			   Thread hilo = new Thread(h);
-			   hilo.start();
+			   Thread hilo = new Thread(h);									//Creamos un hilo con el
+			   hilo.start();												//Y lo iniciamos
 			   
 		   }
 		   
-	   }catch(Exception ex) {
+	   }catch(Exception ex) {												//Cazamos cualquier excepcion que pueda saltar en la ejecucion del bucle
 		   ex.printStackTrace();
 	   }
 	   
