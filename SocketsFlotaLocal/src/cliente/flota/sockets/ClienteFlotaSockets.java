@@ -1,4 +1,4 @@
-package cliente;
+package cliente.flota.sockets;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -18,11 +18,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
-import cliente.ClienteFlotaSockets;
-import partida.Partida;
-import cliente.ClienteFlotaSockets.ButtonListener;
-import cliente.ClienteFlotaSockets.GuiTablero;
-import cliente.ClienteFlotaSockets.MenuListener;
+import cliente.flota.sockets.ClienteFlotaSockets;
+import partida.flota.sockets.Partida;
 
 //Modifícala para que instancie un objeto de la clase AuxiliarClienteFlota en el método 'ejecuta'
 
@@ -348,44 +345,34 @@ public class ClienteFlotaSockets {
 	 */
 	public class ButtonListener implements ActionListener {
 
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			JButton button = (JButton) e.getSource();
-			int f = (int) button.getClientProperty("f");
-			int c = (int) button.getClientProperty("c");
-			pruebaCasilla(f,c);
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JButton button = (JButton) e.getSource();
+            int f = (int) button.getClientProperty("f");
+            int c = (int) button.getClientProperty("c");
+            disparos++;
+            try {
+                int resultado = partida.pruebaCasilla(f,c);
+                if (resultado == Partida.AGUA) {
+                    guiTablero.pintaBoton(guiTablero.buttons[f][c], Color.BLUE);
+                    guiTablero.buttons[f][c].setEnabled(false);
+                } else if (resultado == Partida.TOCADO) {
+                    guiTablero.pintaBoton(guiTablero.buttons[f][c], Color.ORANGE);
+                    guiTablero.buttons[f][c].setEnabled(false);
+                } else if (resultado >= 0) {
+                    guiTablero.pintaBarcoHundido(partida.getBarco(resultado));
+                    quedan--;
+                }
+
+                if (quedan == 0) {
+                    guiTablero.cambiaEstado("FIN ... Intentos: " + disparos + "    Barcos restantes: " + quedan);
+                    guiTablero.desactivaTablero();
+                } else {
+                    guiTablero.cambiaEstado("Intentos: " + disparos + "    Barcos restantes: " + quedan);
+                }
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
         } // end actionPerformed
-
-	} // end class ButtonListener
-
-
-
-	private void pruebaCasilla(int f, int c) {
-		disparos++;
-		try {
-			
-			int resultado = partida.pruebaCasilla(f, c); //Llamamos al metodo de la clase auxiliar para probar casilla en el servidor
-			if (resultado == Partida.AGUA) {
-				guiTablero.pintaBoton(guiTablero.buttons[f][c], Color.BLUE);
-				guiTablero.buttons[f][c].setEnabled(false);
-			} else if (resultado == Partida.TOCADO) {
-				guiTablero.pintaBoton(guiTablero.buttons[f][c], Color.ORANGE);
-				guiTablero.buttons[f][c].setEnabled(false);
-			} else if (resultado >= 0) {
-				guiTablero.pintaBarcoHundido(partida.getBarco(resultado));
-				quedan--;
-				
-			}
-		}catch(IOException ex) {	//Si no recibimos nada o es erroneo, se lanza una excepcion.
-			ex.printStackTrace();
-		}
-		
-		if (quedan == 0) {
-			guiTablero.cambiaEstado("FIN ... Intentos: " + disparos + "    Barcos restantes: " + quedan);
-			guiTablero.desactivaTablero();
-		} else {
-			guiTablero.cambiaEstado("Intentos: " + disparos + "    Barcos restantes: " + quedan);
-		}
-	}
-
+    } // end class ButtonListener
 } // end class Juego

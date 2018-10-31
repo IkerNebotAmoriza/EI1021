@@ -1,4 +1,4 @@
-package comun;
+package comun.flota.sockets;
 
 import java.net.*;
 import java.io.*;

@@ -1,9 +1,9 @@
 
-package cliente;
+package cliente.flota.sockets;
 import java.net.*;
 import java.io.*;
 
-import comun.*;
+import comun.flota.sockets.*;
 
 /**
  * Esta clase implementa el intercambio de mensajes

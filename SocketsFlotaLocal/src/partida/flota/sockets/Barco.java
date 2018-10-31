@@ -1,4 +1,4 @@
- package partida;
+ package partida.flota.sockets;
 
 public class Barco {	
 	/**

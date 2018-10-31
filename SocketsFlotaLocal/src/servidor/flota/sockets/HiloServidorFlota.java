@@ -1,11 +1,7 @@
-package servidor;
+package servidor.flota.sockets;
 
-
-import java.io.IOException;
-import java.net.SocketException;
-
-import partida.*;
-import comun.MyStreamSocket;
+import partida.flota.sockets.*;
+import comun.flota.sockets.MyStreamSocket;
 
 /**
  * Clase ejecutada por cada hebra encargada de servir a un cliente del juego Hundir la flota.

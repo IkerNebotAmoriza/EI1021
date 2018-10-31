@@ -1,4 +1,4 @@
-package partida;
+package partida.flota.sockets;
 
 import java.util.Random;
 import java.util.Vector;

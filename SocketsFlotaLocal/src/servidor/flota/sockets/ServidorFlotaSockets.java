@@ -1,8 +1,6 @@
-package servidor;
-import java.net.InetAddress;
+package servidor.flota.sockets;
 import java.net.ServerSocket;
-
-import comun.MyStreamSocket;
+import comun.flota.sockets.MyStreamSocket;
 
 /**
  * Este modulo contiene la logica de aplicacion del servidor del juego Hundir la flota
