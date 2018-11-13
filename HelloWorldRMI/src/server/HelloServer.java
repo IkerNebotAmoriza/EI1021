@@ -33,10 +33,10 @@ public class HelloServer {
 
             // start a security manager - this is needed if
             // stub downloading is in use for this application.
-            // Te following sentence avoids the need to use
+            // The following sentence avoids the need to use
             // the option -DJava.security.policy=..." when launching the clinet
-            // System.setProperty("java.security.policy", "src/server/java.policy");
-            // System.setSecurityManager(new SecurityManager());
+            System.setProperty("java.security.policy", "src/server/java.policy");
+            System.setSecurityManager(new SecurityManager());
 
             startRegistry(RMIPortNum);
 
