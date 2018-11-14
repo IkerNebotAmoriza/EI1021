@@ -10,8 +10,7 @@ public class ImplServidorJuegoRMI implements IntServidorJuegoRMI{
 
 	@Override
 	public IntServidorPartidasRMI nuevoServidorPartidas() throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
+		return new ImplServidorPartidasRMI();
 	}
 
 	@Override
