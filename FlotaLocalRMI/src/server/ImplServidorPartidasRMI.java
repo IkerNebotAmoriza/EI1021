@@ -1,28 +1,37 @@
 package server;
 
 import tablero.*;
+
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+
 import common.IntServidorPartidasRMI;
 
-public class ImplServidorPartidasRMI implements IntServidorPartidasRMI{
+public class ImplServidorPartidasRMI extends UnicastRemoteObject implements IntServidorPartidasRMI{
 	Partida partida;
+	
+	protected ImplServidorPartidasRMI() throws RemoteException {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
 	@Override
 	public void nuevaPartida(int nf, int nc, int nb) {
-		partida = new Partida(nf, nc, nb);
+		this.partida = new Partida(nf, nc, nb);
 	}
 
 	@Override
 	public int pruebaCasilla(int nf, int nc) {
-		return pruebaCasilla(nf,nc);
+		return partida.pruebaCasilla(nf, nc);
 	}
 
 	@Override
 	public String getBarco(int idBarco) {
-		return getBarco(idBarco);
+		return partida.getBarco(idBarco);
 	}
 
 	@Override
 	public String[] getSolucion() {
-		return getSolucion();
+		return partida.getSolucion();
 	}
 }

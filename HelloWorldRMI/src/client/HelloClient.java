@@ -33,8 +33,8 @@ public class HelloClient {
             // downloading is in use for this application.
             // The following sentence avoids the need to use
             // the option -DJava.security.policy=..." when launching the client
-            System.setProperty("java.security.policy", "HelloWorldRMI/src/client/java.policy");
-            System.setSecurityManager(new SecurityManager());
+            //System.setProperty("java.security.policy", "HelloWorldRMI/src/client/java.policy");
+            //System.setSecurityManager(new SecurityManager());
 
             String registryURL = "rmi://localhost:" + portNum + "/hello";
             // find the remote object and cast it to an interface object

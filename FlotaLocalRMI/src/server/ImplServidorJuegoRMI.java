@@ -1,12 +1,18 @@
 package server;
 
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 
 import common.IntCallbackCliente;
 import common.IntServidorJuegoRMI;
 import common.IntServidorPartidasRMI;
 
-public class ImplServidorJuegoRMI implements IntServidorJuegoRMI{
+public class ImplServidorJuegoRMI extends UnicastRemoteObject implements IntServidorJuegoRMI {
+	
+	protected ImplServidorJuegoRMI() throws RemoteException {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
 	@Override
 	public IntServidorPartidasRMI nuevoServidorPartidas() throws RemoteException {
