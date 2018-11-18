@@ -18,21 +18,23 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
+import common.IntCallbackCliente;
 import common.IntServidorJuegoRMI;
 import common.IntServidorPartidasRMI;
 import server.ImplServidorPartidasRMI;
 import tablero.Partida;
 
 
-//Modifícala para que instancie un objeto de la clase AuxiliarClienteFlota en el método 'ejecuta'
+//Modifï¿½cala para que instancie un objeto de la clase AuxiliarClienteFlota en el mï¿½todo 'ejecuta'
 
 	// Modifica todas las llamadas al objeto de la clase Partida
 	// por llamadas al objeto de la clase AuxiliarClienteFlota.
-	// Los métodos a llamar tendrán la misma signatura.
+	// Los mï¿½todos a llamar tendrï¿½n la misma signatura.
 
 public class ClienteFlotaRMI {
 	
@@ -48,6 +50,9 @@ public class ClienteFlotaRMI {
 	
 	/** Atributos de la partida guardados en el juego para simplificar su implementacion */
 	private int quedan = NUMBARCOS, disparos = 0;
+	
+	private String nombreJugador;
+	IntServidorJuegoRMI juego;
 
 	/**
 	 * Programa principal. Crea y lanza un nuevo juego
@@ -67,7 +72,6 @@ public class ClienteFlotaRMI {
 		try {
 			partida.nuevaPartida(NUMFILAS, NUMCOLUMNAS, NUMBARCOS);
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		SwingUtilities.invokeLater(new Runnable() {
@@ -100,11 +104,11 @@ public class ClienteFlotaRMI {
 
             String registryURL = "rmi://localhost:" + portNum + "/JuegoRMI";
             // find the remote object and cast it to an interface object
-            IntServidorJuegoRMI juego = (IntServidorJuegoRMI) Naming.lookup(registryURL);
+            juego = (IntServidorJuegoRMI) Naming.lookup(registryURL);
 
             System.out.println("Lookup completed ");
             // invoke the remote method
-            partida = juego.nuevoServidorPartidas(); //AQUI FALLA ALGO
+            partida = juego.nuevoServidorPartidas();
         } // end try
         catch (Exception e) {
             System.out.println(
@@ -141,7 +145,15 @@ public class ClienteFlotaRMI {
 			anyadeGrid(numFilas, numColumnas);		
 			anyadePanelEstado("Intentos: " + disparos + "    Barcos restantes: " + quedan);		
 			frame.setSize(300, 300);
-			frame.setVisible(true);	
+			frame.setVisible(true);
+			while (nombreJugador == null || nombreJugador.length() == 0) {
+				nombreJugador =	JOptionPane.showInputDialog(frame, "Introduce un nombre de usuario:", null);
+				if (nombreJugador == null) {
+	       			frame.dispose();   
+	       			break;
+	       		}
+			}
+			frame.setTitle(nombreJugador);
 		} // end dibujaTablero
 
 		/**
@@ -166,6 +178,25 @@ public class ClienteFlotaRMI {
 			menu.add(m3);
 			
 			menuBar.add(menu);
+			
+			menu = new JMenu("Multijugador");
+			m1 = new JMenuItem("Proponer Partida");
+			m2 = new JMenuItem("Borrar Partida");
+			m3 = new JMenuItem("Listar Partidas");
+			JMenuItem m4 = new JMenuItem("Aceptar Partida");
+			
+			m1.addActionListener(m);
+			m2.addActionListener(m);
+			m3.addActionListener(m);
+			m4.addActionListener(m);
+			
+			menu.add(m1);
+			menu.add(m2);
+			menu.add(m3);
+			menu.add(m4);
+			
+			menuBar.add(menu);
+			
 			frame.setJMenuBar(menuBar);
 			
 		} // end anyadeMenu
@@ -245,7 +276,6 @@ public class ClienteFlotaRMI {
 			try {
 				solucion = partida.getSolucion();
 			} catch (RemoteException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}	
 			for (int i = 0; i < solucion.length; i++) {				 
@@ -353,7 +383,6 @@ public class ClienteFlotaRMI {
 				try {
 					partida.nuevaPartida(NUMFILAS, NUMCOLUMNAS, NUMBARCOS);
 				} catch (RemoteException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 				break;
@@ -362,10 +391,67 @@ public class ClienteFlotaRMI {
 				break;
 			case "Salir":
 				guiTablero.liberaRecursos();
+				try {
+					juego.borraPartida(nombreJugador);
+				} catch (RemoteException e2) {
+					e2.printStackTrace();
+				}
 				System.exit(0);
-				
+				break;
+			case "Proponer Partida":
+				try {
+					IntCallbackCliente cbk = new ImpCallbackCliente();
+					if (juego.proponPartida(nombreJugador, cbk))
+						guiTablero.cambiaEstado("Nueva partida propuesta.");
+					else
+						guiTablero.cambiaEstado("Ya hay una partida propuesta.");
+					
+				} catch (RemoteException e1) {
+					e1.printStackTrace();
+				}
+				break;
+			case "Borrar Partida":
+				try {
+					if (juego.borraPartida(nombreJugador))
+						guiTablero.cambiaEstado("Se ha borrado la partida.");
+					else
+						guiTablero.cambiaEstado("No hay partida propuesta.");
+					break;
+				} catch (RemoteException e1) {
+					e1.printStackTrace();
+				}
+			case "Listar Partidas":
+				String[] listaPartidas;
+				try {
+					String texto = "";
+					listaPartidas = juego.listaPartidas();					
+					for (int i = 0; i < listaPartidas.length; i++) {
+						System.out.println(i + ": " + listaPartidas[i]);
+						texto += i + ": " + listaPartidas[i] + "\n";
+					}
+					if(!texto.isEmpty())
+						JOptionPane.showMessageDialog(guiTablero.frame, texto);
+					else {
+						JOptionPane.showMessageDialog(guiTablero.frame, "No hay ninguna partida.");
+						guiTablero.cambiaEstado("No hay ninguna partida.");
+					}
+				} catch (RemoteException e1) {
+					e1.printStackTrace();
+				}	
+				break;
+			case "Aceptar Partida":
+				String nombreRival = JOptionPane.showInputDialog("Introduce el nombre de tu rival:"); 		       	
+		       	if (nombreRival != null) {
+		       		try {
+		       			if(juego.aceptaPartida(nombreJugador, nombreRival))
+		       				guiTablero.cambiaEstado("Se ha empezado la partida.");
+		       			else
+		       				guiTablero.cambiaEstado("No se ha podido empezar la partida.");
+		       		} catch (RemoteException e1) {
+		       			e1.printStackTrace();
+		       		}
+		       	}
 			}
-			
 		} // end actionPerformed
 
 	} // end class MenuListener
