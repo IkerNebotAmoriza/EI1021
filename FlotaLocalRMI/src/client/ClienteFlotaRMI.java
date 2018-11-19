@@ -178,13 +178,13 @@ public class ClienteFlotaRMI {
 			menu.add(m3);
 			
 			menuBar.add(menu);
-			
+			// Aqui anyadimos las nuevas opciones del menu multijugador
 			menu = new JMenu("Multijugador");
 			m1 = new JMenuItem("Proponer Partida");
 			m2 = new JMenuItem("Borrar Partida");
 			m3 = new JMenuItem("Listar Partidas");
 			JMenuItem m4 = new JMenuItem("Aceptar Partida");
-			
+			// Y sus respectivos ActionListeners
 			m1.addActionListener(m);
 			m2.addActionListener(m);
 			m3.addActionListener(m);
@@ -398,6 +398,13 @@ public class ClienteFlotaRMI {
 				}
 				System.exit(0);
 				break;
+				
+				/////////////////////////////////////////////////////////////////////////////////
+				// A partir de aqui gestionamos los eventos producidos por el menu multijugador//
+				/////////////////////////////////////////////////////////////////////////////////
+				
+				// CASO BORRAR UNA PARTIDA
+		
 			case "Proponer Partida":
 				try {
 					IntCallbackCliente cbk = new ImpCallbackCliente();
@@ -410,6 +417,9 @@ public class ClienteFlotaRMI {
 					e1.printStackTrace();
 				}
 				break;
+				
+				// CASO BORRAR UNA PARTIDA
+				
 			case "Borrar Partida":
 				try {
 					if (juego.borraPartida(nombreJugador))
@@ -420,6 +430,9 @@ public class ClienteFlotaRMI {
 				} catch (RemoteException e1) {
 					e1.printStackTrace();
 				}
+				
+				// CASO LISTAR PARTIDAS
+				
 			case "Listar Partidas":
 				String[] listaPartidas;
 				try {
@@ -439,6 +452,9 @@ public class ClienteFlotaRMI {
 					e1.printStackTrace();
 				}	
 				break;
+				
+				// CASO ACEPTAR UNA PARTIDA
+				
 			case "Aceptar Partida":
 				String nombreRival = JOptionPane.showInputDialog("Introduce el nombre de tu rival:"); 		       	
 		       	if (nombreRival != null) {

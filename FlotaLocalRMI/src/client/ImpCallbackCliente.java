@@ -11,6 +11,7 @@ public class ImpCallbackCliente extends UnicastRemoteObject implements IntCallba
 		super();
 	}
 
+	// Implementacion del metodo de la interfaz IntCallbackCliente
 	@Override
 	public void notificame(String mensaje) throws RemoteException {
 		 System.out.println("Mensaje recibido: " + mensaje);		
