@@ -51,8 +51,9 @@ public class RecursoPartida {
 	 * @param	columnas	columnas del tablero
 	 * @param	barcos		barcos en el tablero
 	 * @param	uriInfo		ruta absoluta al nuevo recurso obtenida a partir del Contexto
-	 * @return				cuerpo vacío y URI del recurso con la partida recien creada en la cabecera Location
-	 */	
+	 * @return				cuerpo vacio y URI del recurso con la partida recien creada en la cabecera Location
+	 */
+	
 	@POST
 	@Path("/{filas}/{columnas}/{barcos}")
 	public Response nuevaPartida(@PathParam("filas") int filas,
@@ -81,9 +82,11 @@ public class RecursoPartida {
 	/**
 	 * Borra una partida del diccionario
 	 * @param	idPartida	identificador de la partida
-	 * @return				cuerpo vacío y estado indicando si se ha podido borrar la partida
-	 */		
-	/* FALTAN ANOTACIONES JAX-RS*/
+	 * @return				cuerpo vacio y estado indicando si se ha podido borrar la partida
+	 */
+	
+	@DELETE
+	@Path("{idPartida}")
 	public Response borraPartida(@PathParam("idPartida") int idPartida) {
 		/* POR IMPLEMENTAR */
         return null; // A MODIFICAR
@@ -96,35 +99,43 @@ public class RecursoPartida {
 	 * @param	columna		columna de la casilla
 	 * @return				cuerpo conteniendo el resultado de probar la casilla
 	 */
-	/* FALTAN ANOTACIONES JAX-RS*/
-	public Response pruebaCasilla( @PathParam("idPartida") int idPartida,
-			@QueryParam("fila") int fila,
-			@QueryParam("columna") int columna)   {
-		/* POR IMPLEMENTAR */
-        return null; // A MODIFICAR
+	
+	@PUT
+	@Path("{idPartida}")
+	@Produces("text/plain")
+	public Response pruebaCasilla( @PathParam("idPartida") int idPartida, @QueryParam("fila") int fila, @QueryParam("columna") int columna){
+		if ( partidaDB.get(idPartida) == null ) {	// Si no existe la partida 
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+		int resultado = partidaDB.get(idPartida).pruebaCasilla(fila, columna);	// Probamos la casilla en el mapa de partidas
+		ResponseBuilder builder = Response.ok(resultado); // Estructuramos la respuesta
+		return builder.build();	// Construimos y devolvemos la respuesta
 	}
 	
-
 	/**
 	 * Obtiene los datos de un barco.
 	 * @param	idPartida	identificador de la partida
 	 * @param	idBarco		identificador del barco
 	 * @return				cuerpo conteniendo la cadena con informacion sobre el barco "fila#columna#orientacion#tamanyo"
 	 */
-	/* FALTAN ANOTACIONES JAX-RS*/
-	public Response getBarco( @PathParam("idPartida") int idPartida,
-			@PathParam("idBarco") int idBarco)   {
-		/* POR IMPLEMENTAR */
-        return null; // A MODIFICAR
+	
+	@GET
+	@Path("{idPartida},{idBarco}")
+	@Produces("text/plain")
+	public Response getBarco( @PathParam("idPartida") int idPartida, @PathParam("idBarco") int idBarco)   {
+		
 	}
 
 
 	/**
 	 * Devuelve la informacion sobre todos los barcos
 	 * @param	idPartida	identificador de la partida
-	 * @return 		cuerpo conteniendo la codificación XML de la solución
+	 * @return 		cuerpo conteniendo la codificacion XML de la solucion
 	 */
-	/* FALTAN ANOTACIONES JAX-RS*/
+	
+	@GET
+	@Path("{idPartida}")
+	@Produces("text/plain") //XML es un subtipo de text, asi que esto es valido
 	public Response getSolucion(@PathParam("idPartida") int idPartida) {
 		/* POR IMPLEMENTAR */
         return null; // A MODIFICAR
@@ -136,6 +147,7 @@ public class RecursoPartida {
 	 * @param numBarcos	número de barcos en la partida
 	 * @return			cadena con el código XML conteniendo la solución
 	 */
+	
 	protected String solucionAXML(String[] solucion, int numBarcos) {
 		StringBuilder str = new StringBuilder();
 		// Crea la etiqueta 'solucion' con su atributo 'tam'
@@ -146,9 +158,4 @@ public class RecursoPartida {
 		str.append("</solucion>");
 		return str.toString();
 	}
-
-
-
-
-
 }

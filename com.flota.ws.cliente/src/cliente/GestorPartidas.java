@@ -23,27 +23,22 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-
 public class GestorPartidas {
-
 	// URI del recurso que permite acceder al juego
 	final private String baseURI = "http://localhost:8080/com.flota.ws/servicios/partidas/";
 	Client cliente = null;
 	// Para guardar el target que obtendrá con la operación nuevaPartida y que le permitirá jugar la partida creada
 	private WebTarget targetPartida = null;
 
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Constructor de la clase
 	 * Crea el cliente
 	 */
+	
 	public GestorPartidas()  {
-        // POR IMPLEMENTAR
+        this.cliente = ClientBuilder.newClient();
 	}
 
 	/**
@@ -84,8 +79,17 @@ public class GestorPartidas {
 	 * @return			resultado de la prueba: AGUA, TOCADO, ya HUNDIDO, recien HUNDIDO
 	 */
 	public int pruebaCasilla( int fila, int columna)   {
-        // POR IMPLEMENTAR
-		return 0; // A MODIFICAR
+		Response response = targetPartida.queryParam("fila", fila).queryParam("columna", columna).request().put(Entity.text("")); // Hacemos una peticion PUT sobre el objeto obtenido por el metodo "nuevaPartida" targetPartida
+		
+		if ( response.getStatus() != 200 ) {	// Si el codigo de estado es diferente de 200 (OK) algo ha fallado
+			if ( response.getStatus() == 204 ) {
+				throw new RuntimeException("No se ha encontrado la partida");	// Si el codigo de estado es 204 (No Content)
+			}
+			throw new RuntimeException("Fallo al comprobar la casilla");	// Para cualquier otro codigo de estado
+		}
+		int resultado = response.readEntity(Integer.class);	// Leemos del cuerpo de la respuesta el valor de probar la casilla
+		response.close();
+		return resultado;	// Devolvemos el resultado de la operacion
 	}
 
 	/**
@@ -94,8 +98,7 @@ public class GestorPartidas {
 	 * @return			cadena con informacion sobre el barco "fila#columna#orientacion#tamanyo"
 	 */
 	public String getBarco( int idBarco)   {
-        // POR IMPLEMENTAR
-		return null; // A MODIFICAR
+		Response response = targetPartida.queryParam("idBarco", idBarco).request().get()
 	}
 
 
