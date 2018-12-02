@@ -173,14 +173,14 @@ public class ClienteFlotaWS {
 		 * Muestra la solucion de la partida y marca la partida como finalizada
 		 */
 		public void muestraSolucion() {
-			// AGUA
+			// Agua
 			for (int i = 0; i < buttons.length - 1; i++) {
 				for (int j = 0; j < buttons[0].length - 2; j++) {
 					guiTablero.pintaBoton(guiTablero.buttons[i][j], Color.BLUE);
 					buttons[i][j].setEnabled(false);
 				}
 			}
-			// SOLUCIÓN
+			// Solucion
 			String[] solucion;
 			solucion = partida.getSolucion();	//El servidor nos devuelve la un vector con los barcos existentes.
 			for (int i = 0; i < solucion.length; i++) { //Pintamos cada barco
@@ -251,7 +251,8 @@ public class ClienteFlotaWS {
 		} // end limpiaTablero
 		
 		public void desactivaTablero() {
-			for (int i = 0; i < numFilas; i++) {
+			guiTablero.muestraSolucion(); // Mostramos la solucion
+			for (int i = 0; i < numFilas; i++) {	// Y desactivamos todas las casillas del tablero
 				for (int j = 0; j < numColumnas; j++) {
 					buttons[i][j].setEnabled(false);
 				}
@@ -292,6 +293,7 @@ public class ClienteFlotaWS {
 				break;
 			case "Salir":
 				guiTablero.liberaRecursos();
+				partida.borraPartida();
 				System.exit(0);
 				
 			}

@@ -49,7 +49,11 @@ public class GestorPartidas {
 	 * @param	numBarcos	numero de barcos
 	 */
 	public void nuevaPartida(int numFilas, int numColumnas, int numBarcos)   {
-
+		
+		if (this.targetPartida != null ) {	// Si ya existía una partida para el cliente, se borra para ahorrar recursos en el servidor.
+			borraPartida();
+		}
+		
 		Response response = cliente.target(baseURI).path(numFilas+"/"+numColumnas+"/"+numBarcos)
 				.request().post(Entity.xml(""));
 
@@ -67,7 +71,15 @@ public class GestorPartidas {
 	 * Crea la partida en juego
 	 */
 	public void borraPartida()   {		
-        // POR IMPLEMENTAR
+        Response response = targetPartida.request().delete(); // Realizamos la peticion sobre la partida almacenada en el servidor, y a la que apunta el WebTarget
+        
+        if ( response.getStatus() != 200 ) {	// Si ocurre algun error lanzamos una excepcion en funcion al codigo de estado
+        	if ( response.getStatus() == 404 ) {
+        		throw new RuntimeException("No existe la partida");
+        	}
+        	throw new RuntimeException("Error al borrar la partida");
+        }
+        response.close();
 	}
 
 
@@ -78,14 +90,14 @@ public class GestorPartidas {
 	 * @param	columna	columna de la casilla
 	 * @return			resultado de la prueba: AGUA, TOCADO, ya HUNDIDO, recien HUNDIDO
 	 */
-	public int pruebaCasilla( int fila, int columna)   {
+	public int pruebaCasilla( int fila, int columna) {
 		Response response = targetPartida.queryParam("fila", fila).queryParam("columna", columna).request().put(Entity.text("")); // Hacemos una peticion PUT sobre el objeto obtenido por el metodo "nuevaPartida" targetPartida
 		
 		if ( response.getStatus() != 200 ) {	// Si el codigo de estado es diferente de 200 (OK) algo ha fallado
 			if ( response.getStatus() == 204 ) {
-				throw new RuntimeException("No se ha encontrado la partida");	// Si el codigo de estado es 204 (No Content)
+				throw new RuntimeException("No se ha encontrado la partida");
 			}
-			throw new RuntimeException("Fallo al comprobar la casilla");	// Para cualquier otro codigo de estado
+			throw new RuntimeException("Fallo al comprobar la casilla");
 		}
 		int resultado = response.readEntity(Integer.class);	// Leemos del cuerpo de la respuesta el valor de probar la casilla
 		response.close();
@@ -98,9 +110,18 @@ public class GestorPartidas {
 	 * @return			cadena con informacion sobre el barco "fila#columna#orientacion#tamanyo"
 	 */
 	public String getBarco( int idBarco)   {
-		Response response = targetPartida.queryParam("idBarco", idBarco).request().get()
+		Response response = targetPartida.path("/barco/"+idBarco).request(MediaType.TEXT_PLAIN).get(); // Hacemos una peticion GET sobre la partida almacenada en el servidor
+		
+		if ( response.getStatus() != 200 ) {	// Si el estado de la peticion es diferente de 200 (OK) lanzamos una excepcion
+			if ( response.getStatus() == 404 ) {
+				throw new RuntimeException("El barco con el id: "+idBarco+" no existe");
+			}
+			throw new RuntimeException("Fallo al obtener el barco");
+		}
+		String barco = response.readEntity(String.class);	//Si todo ha salido bien guardamos el contenido del cuerpo de la respuesta
+		response.close();	// Cerramos la peticion y devolvemos la cadena con los datos del barco
+		return barco;
 	}
-
 
 	/**
 	 * Devuelve la informacion sobre todos los barcos

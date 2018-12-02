@@ -60,22 +60,21 @@ public class RecursoPartida {
 			@PathParam("columnas") int columnas,
 			@PathParam("barcos") int barcos,
 			@Context UriInfo uriInfo) {
-		System.out.println("[WS] nuevaPartida. POST con path: "+filas+"/"+columnas+"/"+barcos);
-		
 		Partida partida = new Partida(filas, columnas, barcos);
 		
 		// Asigna a la partida un identificador unico incrementando el atributo idCounter
 		int id = idCounter.incrementAndGet();
 		partidaDB.put(id, partida);
+		System.out.println("[WS] nuevaPartida ID: "+id+". POST con path: "+filas+"/"+columnas+"/"+barcos);
 
 		// Construye la respuesta incluyendo la URI absoluta al nuevo recurso partida
-		// Obtiene la ruta absoluta de la información de contexto inyectada mediante @Context al método
+		// Obtiene la ruta absoluta de la informacion de contexto inyectada mediante @Context al metodo
 		UriBuilder uriBuilder = uriInfo.getBaseUriBuilder();
 		URI newURI = uriBuilder.path("partidas/" + id).build();
 
 		// El método created añade el URI proporcionado a la cabecera 'Location'
 		ResponseBuilder response = Response.created(newURI);
-		// Devuelve el estado 201 indicando que la partida se ha CREATED con éxito
+		// Devuelve el estado 201 indicando que la partida se ha CREATED con exito
 		return response.status(Response.Status.CREATED).build();
 	}
 
@@ -88,8 +87,12 @@ public class RecursoPartida {
 	@DELETE
 	@Path("{idPartida}")
 	public Response borraPartida(@PathParam("idPartida") int idPartida) {
-		/* POR IMPLEMENTAR */
-        return null; // A MODIFICAR
+		if ( partidaDB.containsKey(idPartida) == false ) {
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+		partidaDB.remove(idPartida);
+		System.out.println("La partida ID: "+idPartida+" ha sido eliminada.");
+		return Response.status(Response.Status.OK).build();
 	}
 
 	/**
@@ -104,12 +107,12 @@ public class RecursoPartida {
 	@Path("{idPartida}")
 	@Produces("text/plain")
 	public Response pruebaCasilla( @PathParam("idPartida") int idPartida, @QueryParam("fila") int fila, @QueryParam("columna") int columna){
-		if ( partidaDB.get(idPartida) == null ) {	// Si no existe la partida 
+		if ( partidaDB.containsKey(idPartida) == false ) {	// Si no existe la partida 
 			return Response.status(Response.Status.NOT_FOUND).build();
 		}
 		int resultado = partidaDB.get(idPartida).pruebaCasilla(fila, columna);	// Probamos la casilla en el mapa de partidas
 		ResponseBuilder builder = Response.ok(resultado); // Estructuramos la respuesta
-		return builder.build();	// Construimos y devolvemos la respuesta
+		return builder.status(Response.Status.OK).build();	// Construimos y devolvemos la respuesta
 	}
 	
 	/**
@@ -120,10 +123,17 @@ public class RecursoPartida {
 	 */
 	
 	@GET
-	@Path("{idPartida},{idBarco}")
+	@Path("{idPartida}/barco/{idBarco}")
 	@Produces("text/plain")
 	public Response getBarco( @PathParam("idPartida") int idPartida, @PathParam("idBarco") int idBarco)   {
-		
+		String resultado;
+		try {
+			resultado = partidaDB.get(idPartida).getBarco(idBarco);
+		}catch ( Exception ex ) {
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+		ResponseBuilder builder = Response.ok(resultado);
+		return builder.status(Response.Status.OK).build();
 	}
 
 
@@ -134,18 +144,24 @@ public class RecursoPartida {
 	 */
 	
 	@GET
-	@Path("{idPartida}")
+	@Path("{idPartida}/solucion")
 	@Produces("text/plain") //XML es un subtipo de text, asi que esto es valido
 	public Response getSolucion(@PathParam("idPartida") int idPartida) {
-		/* POR IMPLEMENTAR */
-        return null; // A MODIFICAR
+		if ( partidaDB.containsKey(idPartida) == false ) {
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+		String [] sol = partidaDB.get(idPartida).getSolucion();
+		int nBarcos = sol.length;
+		
+		ResponseBuilder builder = Response.ok(solucionAXML(sol, nBarcos));
+		return builder.status(Response.Status.OK).build();
 	}
 
 	/**
-	 * Construye una cadena con el código XML que contiene la solución de la partida
-	 * @param solucion	vector de cadenas con la solución
+	 * Construye una cadena con el codigo XML que contiene la solucion de la partida
+	 * @param solucion	vector de cadenas con la solucion
 	 * @param numBarcos	número de barcos en la partida
-	 * @return			cadena con el código XML conteniendo la solución
+	 * @return			cadena con el codigo XML conteniendo la solucion
 	 */
 	
 	protected String solucionAXML(String[] solucion, int numBarcos) {
