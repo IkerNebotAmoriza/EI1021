@@ -71,6 +71,17 @@ public class Partida {
 		return quedan;
 	}
 	
+	public int getNumBarcos() {
+		return numBarcos;
+	}
+	
+	public int getNumFilas() {
+		return numFilas;
+	}
+	public int getNumColumnas() {
+		return numColumnas;
+	}
+	
 	/**
 	 * Dispara sobre una casilla y devuelve el resultado
 	 * @param	f	fila de la casilla
