@@ -47,7 +47,7 @@ public class SolucionPartidaServlet extends HttpServlet {
 		}
 	}
 	
-	private boolean [][] getTableroSolucion(String [] solucion) {
+	private boolean [][] getTableroSolucion(String [] solucion) { // Este método proporciona una matriz de booleanos con la solucion
 		boolean [][] tablero = new boolean[numFilas][numColumnas];
 		String [] datosBarco;
 

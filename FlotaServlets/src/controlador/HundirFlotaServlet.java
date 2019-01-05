@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,7 +14,7 @@ import modelo.Partida;
 /**
  * Servlet implementation class HundirFlotaServlet
  */
-@WebServlet("/HundirFlotaServlet")
+// Se ha eliminado la notacion de los servlets 3.0 para introducir manualmente el servlet en web.xml
 public class HundirFlotaServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final int numFilas = 8;

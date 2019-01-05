@@ -9,4 +9,18 @@
     <welcome-file>default.htm</welcome-file>
     <welcome-file>default.jsp</welcome-file>
   </welcome-file-list>
+  
+  <!-- Aqui se han introducido manualmente los datos del servlet "HundirFlotaServlet", para mostrar su funcionamiento. Sin embargo
+  	   el resto de servlets utilizan anotaciones en las clases, ya que Tomcat 9.0 es compatible con Servlets 3.0, que son los que las utilizan -->
+  
+  <servlet>
+    <description></description>
+    <display-name>HundirFlotaServlet</display-name>
+    <servlet-name>HundirFlotaServlet</servlet-name>
+    <servlet-class>controlador.HundirFlotaServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>HundirFlotaServlet</servlet-name>
+    <url-pattern>/HundirFlotaServlet</url-pattern>
+  </servlet-mapping>
 </web-app>

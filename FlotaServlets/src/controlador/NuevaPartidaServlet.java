@@ -27,12 +27,12 @@ public class NuevaPartidaServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// borra sesion
+		// Borra la sesion
 		HttpSession session = request.getSession(false);
 		if (session != null) {
 			session.invalidate();
 		}
-		// redireccion
+		// Redireccion a una nueva partida
 		response.sendRedirect("HundirFlotaServlet");
 	}
 }
